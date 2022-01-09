@@ -8,6 +8,7 @@ import tensorflow as tf
 from tensorflow.keras.applications.resnet50 import preprocess_input, decode_predictions
 from tensorflow.keras.preprocessing import image
 from tensorflow.keras.applications.resnet50 import preprocess_input
+import math
 
 class _Color:
     def __init__(self, data):

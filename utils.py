@@ -1,7 +1,3 @@
-"""
-    A lot of these functions are written for clarity rather than speed. We'll
-    fix that in time.
-"""
 import math
 
 def graycode(x):
@@ -9,9 +5,7 @@ def graycode(x):
 
 
 def igraycode(x):
-    """
-        Inverse gray code.
-    """
+    
     if x == 0:
         return x
     m = int(math.ceil(math.log(x, 2)))+1
@@ -23,9 +17,7 @@ def igraycode(x):
 
 
 def bits(n, width):
-    """
-        Convert n to a list of bits of length width.
-    """
+    
     assert n < 2**width
     bin = []
     for i in range(width):
@@ -34,9 +26,7 @@ def bits(n, width):
 
 
 def bits2int(bits):
-    """
-        Convert a list of bits to an integer.
-    """
+    
     n = 0
     for p, i in enumerate(reversed(bits)):
         n += i*2**p
@@ -44,11 +34,7 @@ def bits2int(bits):
 
 
 def rrot(x, i, width):
-    """
-        Right bit-rotation.
-
-        width: the bit width of x.
-    """
+    
     assert x < 2**width
     i = i%width
     x = (x>>i) | (x<<width-i)
@@ -56,11 +42,7 @@ def rrot(x, i, width):
 
 
 def lrot(x, i, width):
-    """
-        Left bit-rotation.
-
-        width: the bit width of x.
-    """
+    
     assert x < 2**width
     i = i%width
     x = (x<<i) | (x>>width-i)
@@ -68,9 +50,7 @@ def lrot(x, i, width):
 
 
 def tsb(x, width):
-    """
-        Trailing set bits.
-    """
+    
     assert x < 2**width
     i = 0
     while x&1 and i <= width:
@@ -78,12 +58,9 @@ def tsb(x, width):
         i += 1
     return i
 
-
+#Ustawia bit i w liczbie całkowitej x o szerokości w na b.
 def setbit(x, w, i, b):
-    """
-        Sets bit i in an integer x of width w to b.
-        b must be 1 or 0
-    """
+   
     assert b in [1, 0]
     assert i < w
     if b:
@@ -91,19 +68,14 @@ def setbit(x, w, i, b):
     else:
         return x & ~2**(w-i-1)
 
-
+#Wyodrębnia zakres bitów jako liczbę całkowitą. 
 def bitrange(x, width, start, end):
-    """
-        Extract a bit range as an integer.
-        (start, end) is inclusive lower bound, exclusive upper bound.
-    """
+    
     return x >> (width-end) & ((2**(end-start))-1)
 
-
+#Zwraca lokalną entropię bajtów dla lokalizacji w pliku.
 def entropy(data, blocksize, offset, symbols=256):
-    """
-        Returns local byte entropy for a location in a file.
-    """
+    
     
     if offset < blocksize/2:
         start = 0
@@ -118,8 +90,6 @@ def entropy(data, blocksize, offset, symbols=256):
     entropy = 0
     for i in hist.values():
         p = i/float(blocksize)
-        # If blocksize < 256, the number of possible byte values is restricted.
-        # In that case, we adjust the log base to make sure we get a value
-        # between 0 and 1.
+        
         entropy += (p * math.log(p, base))
     return -entropy

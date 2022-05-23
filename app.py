@@ -1,16 +1,16 @@
 from tensorflow.python import keras
 import streamlit as st
 from PIL import Image, ImageDraw
-import hilber_curve
+import curve
 import tensorflow as tf
 import numpy as np
 import tensorflow as tf
 from tensorflow.keras.applications.resnet50 import preprocess_input, decode_predictions
 from tensorflow.keras.preprocessing import image
-from tensorflow.keras.applications.resnet50 import preprocess_input
+from tensorflow.keras.applications.resnet50 import preprocentropiaeness_input
 import math
 
-class _Color:
+class kolor:
     def __init__(self, data):
         self.data, self.block = data, None
         self.data = data
@@ -25,15 +25,15 @@ class _Color:
             return self.block[2]
         else:
             return self.getPoint(x)
-class ColorEntropy(_Color):
+class kolorujEntropie(kolor):
     def getPoint(self, x):
-        e = entropy(self.data, 32, x, len(self.symbol_map))
-        # http://www.wolframalpha.com/input/?i=plot+%284%28x-0.5%29-4%28x-0.5%29**2%29**4+from+0.5+to+1
-        def curve(v):
+        e = entropia(self.data, 32, x, len(self.symbol_map))
+        
+        def krzywa(v):
             f = (4*v - 4*v**2)**4
             f = max(f, 0)
             return f
-        r = curve(e-0.5) if e > 0.5 else 0
+        r = krzywa(e-0.5) if e > 0.5 else 0
         b = e**2
         return [
             int(255*r),
@@ -41,25 +41,25 @@ class ColorEntropy(_Color):
             int(255*b)
         ]
 
-def drawmap_unrolled( size, csource, name):
+def narysujMapeRozwinieta( size, csource, name):
     
     map = fs(2, size**2)
     c = Image.new("RGB", (size, size*4))
 
-    cd = ImageDraw.Draw(c)
-    step = len(csource)/float(len(map)*4)
+    d = ImageDraw.Draw(c)
+    krok = len(csource)/float(len(map)*4)
 
-    sofar = 0
-    for quad in range(4):
+    
+    for k in range(4):
         for i, p in enumerate(map):
-            off = (i + (quad * size**2))
-            color = csource.point(
-                        int(off * step)
+            off = (i + (k * size**2))
+            kolor = csource.point(
+                        int(off * krok)
                     )
             x, y = tuple(p)
-            cd.point(
-                (x, y + (size * quad)),
-                fill=tuple(color)
+            d.point(
+                (x, y + (size * k)),
+                fill=tuple(kolor)
             )
     c =c.resize((224,224))
     pred = image.img_to_array(c)
@@ -69,10 +69,10 @@ def drawmap_unrolled( size, csource, name):
     
 
 def fs(dim,size):
-    return hilber_curve.Hilbert.fromSize(dim,size)
+    return curve.Hilbert.fromSize(dim,size)
 
 
-def entropy(data, blocksize, offset, symbols=256):
+def entropia(data, blocksize, offset, symbols=256):
     
     if offset < blocksize/2:
         start = 0
@@ -84,12 +84,12 @@ def entropy(data, blocksize, offset, symbols=256):
     for i in data[int(start):int(start+blocksize)]:
         hist[i] = hist.get(i, 0) + 1
     base = min(blocksize, symbols)
-    entropy = 0
+    entropia = 0
     for i in hist.values():
         p = i/float(blocksize)
         
-        entropy += (p * math.log(p, base))
-    return -entropy
+        entropia += (p * math.log(p, base))
+    return -entropia
 
 def footer_markdown():
     footer="""
@@ -130,7 +130,7 @@ st.set_page_config(page_title='Android Malware Detection')
 
 st.markdown('<h1 style="font-family:Courier; color:White; font-size: 30px;text-align:center">Android Malware Detection Tool</h1>',unsafe_allow_html=True)
 
-st.markdown('<p style="font-family:Courier; color:White; font-size: 18px;text-align:center">This tool uses Hilbert space-filling curve with an entropy algorithm to create a binary visualization of .APK file, then it is passed to the CNN trained model which predicts whether a file is malware or legitimate application</p>',unsafe_allow_html=True)
+st.markdown('<p style="font-family:Courier; color:White; font-size: 18px;text-align:center">This tool uses Hilbert space-filling curve with an entropia algorithm to create a binary visualization of .APK file, then it is passed to the CNN trained model which predicts whether a file is malware or legitimate application</p>',unsafe_allow_html=True)
 
 
 
@@ -155,12 +155,12 @@ if file is not None:
     source = file.getvalue()
     dst = "testing.png"
 
-    calc = ColorEntropy(source)
+    calc = kolorujEntropie(source)
     
     with st.spinner("Generating binary visualization, please wait..."):
         
-        im,pred = drawmap_unrolled( 256, calc, dst)
-        col2.markdown('<p style="font-family:Courier; color:White; font-size: 8px;text-align:left">Binary Visualization with Entropy algorithm </p>',unsafe_allow_html=True)
+        im,pred = narysujMapeRozwinieta( 256, calc, dst)
+        col2.markdown('<p style="font-family:Courier; color:White; font-size: 8px;text-align:left">Binary Visualization with entropia algorithm </p>',unsafe_allow_html=True)
         col2.image(im)
         
 

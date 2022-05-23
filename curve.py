@@ -8,15 +8,11 @@ def transform(entry, direction, width, x):
 
 
 def itransform(entry, direction, width, x):
-    """
-        Inverse transform - we simply reverse the operations in transform.
-    """
+    
     assert x < 2**width
     assert entry < 2**width
     return utils.lrot(x, direction+1, width)^entry
-    # There is an error in the Hamilton paper's formulation of the inverse
-    # transform in Lemma 2.12. The correct restatement as a transform is as follows:
-    #return transform(rrot(entry, direction+1, width), width-direction-2, width, x)
+    
 
 
 def direction(x, n):
@@ -37,15 +33,7 @@ def entry(x):
 
 
 def hilbert_point(dimension, order, h):
-    """
-        Convert an index on the Hilbert curve of the specified dimension and
-        order to a set of point coordinates.
-    """
-    #    The bit widths in this function are:
-    #        p[*]  - order
-    #        h     - order*dimension
-    #        l     - dimension
-    #        e     - dimension
+    
     hwidth = order*dimension
     e, d = 0, 0
     p = [0]*dimension
@@ -82,12 +70,10 @@ class Hilbert:
 
     @classmethod
     def fromSize(self, dimension, size):
-        """
-            Size is the total number of points in the curve.
-        """
+        
         x = math.log(size, 2)
         if not float(x)/dimension == int(x)/dimension:
-            raise ValueError("Size does not fit Hilbert curve of dimension %s."%dimension)
+            raise ValueError("Size does not fit %s."%dimension)
         return Hilbert(dimension, int(x/dimension))
 
     def __len__(self):
@@ -99,9 +85,7 @@ class Hilbert:
         return self.point(idx)
 
     def dimensions(self):
-        """
-            Size of this curve in each dimension.
-        """
+        
         return [int(math.ceil(len(self)**(1/float(self.dimension))))]*self.dimension
 
     def index(self, p):
